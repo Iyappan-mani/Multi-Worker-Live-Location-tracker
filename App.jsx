@@ -19,6 +19,12 @@ const App = () => {
     const [Loading, setLoading] = useState(true);
     const [LiveButton, setLiveButton] = useState(false);
 
+    // Enter first time only call getLocation this is return one time current location only
+    useEffect(() => {
+        getLocation();
+    }, []);
+
+
     notifee.registerForegroundService(() => {
         return new Promise(() => {
             // Long running task...
@@ -30,38 +36,16 @@ const App = () => {
         });
     });
 
-
-    useEffect(() => {
-
-
-        getLocation();
-
-
-    }, []);
-
+    // sart watch live location next on press end button this work three states (forground , kill , background ) ,and also work off in mobile 
     const startLocationTracking = async () => {
         await getLocation();
         getLocationUpdates();
         startForegroundService();
         setLiveButton(true)
-
         await AsyncStorage.setItem('Live', JSON.stringify(true));
-
-
     };
 
-
-
-
-    const hasLocationPermission = async () => {
-        if (Platform.OS === 'android' && Platform.Version < 23) {
-            return true;
-        }
-
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-    };
-
+    // get current location
     const getLocation = async () => {
         const value = await AsyncStorage.getItem('Live');
         if (value == "true") setLiveButton(true)
@@ -95,6 +79,18 @@ const App = () => {
         );
     };
 
+    // ask and check permission
+    const hasLocationPermission = async () => {
+        if (Platform.OS === 'android' && Platform.Version < 23) {
+            return true;
+        }
+
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+    };
+
+
+    // this main function watch live location
     const getLocationUpdates = () => {
         watchId.current = Geolocation.watchPosition(
             position => {
@@ -118,25 +114,13 @@ const App = () => {
             {
                 enableHighAccuracy: false,
                 distanceFilter: 0,
-                interval: 20000,
+                interval: 20000, // customize
                 fastestInterval: 2000,
             }
         );
     };
 
-    const stopLocationUpdates = async () => {
-        Geolocation.clearWatch(watchId.current);
-        watchId.current = null;
-        setLiveButton(false)
-        let value = await AsyncStorage.getItem('channelId');
-        await notifee.stopForegroundService(JSON.parse(value));
-        try {
-            await AsyncStorage.setItem('Live', JSON.stringify(false));
-        } catch (error) {
-            // Error saving data
-        }
-    };
-
+    // notification trigger
     const startForegroundService = async () => {
         await notifee.requestPermission()
         try {
@@ -157,6 +141,24 @@ const App = () => {
         }
     };
 
+
+
+    // onpress end button call this function this close all live location prosess
+    const stopLocationUpdates = async () => {
+        Geolocation.clearWatch(watchId.current);
+        watchId.current = null;
+        setLiveButton(false)
+        let value = await AsyncStorage.getItem('channelId');
+        await notifee.stopForegroundService(JSON.parse(value));
+        try {
+            await AsyncStorage.setItem('Live', JSON.stringify(false));
+        } catch (error) {
+            // Error saving data
+        }
+    };
+
+    // this is update data in notification , change body text to data its update all states (if you need uncomment)
+
     // useEffect(() => {
     //     if (location?.coords?.latitude !== null && location?.coords?.longitude !== null) {
     //         showNotification();
@@ -173,6 +175,7 @@ const App = () => {
     //         console.error('Error displaying notification:', error);
     //     }
     // };
+    
     if (netInfo?.isConnected == false)
         return (
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
