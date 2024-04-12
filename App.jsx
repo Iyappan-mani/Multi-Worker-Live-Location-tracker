@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Alert, Platform, PermissionsAndroid, ToastAndroid, ActivityIndicator, TouchableOpacity, Image, } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import notifee from '@notifee/react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { MapCircle, MapOverlay, Marker } from 'react-native-maps';
 import { useNetInfo } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -10,10 +10,10 @@ const App = () => {
     const netInfo = useNetInfo();
     // const [location, setLocation] = useState(null);
     const [ListValue, setListValue] = useState([
-        { lat: "12.9219", long: "79.1325", name: "Iyappan" },
-        { lat: "12.9219", long: "79.1325", name: "Suresh" },
-        { lat: "12.9351", long: "79.1501", name: "Ajith" },
-        { lat: "12.9422", long: "79.1860", name: "Santhosh" },
+        { lat: "12.9219", long: "79.1325", name: "Iyappan", image: require("./src/images/user2.jpg") },
+        { lat: "12.9219", long: "79.1325", name: "Suresh", image: require("./src/images/user1.jpg") },
+        { lat: "12.9351", long: "79.1501", name: "Ajith", image: require("./src/images/user3.jpg") },
+        { lat: "12.9422", long: "79.1860", name: "Santhosh", image: require("./src/images/user4.jpg") },
     ]);
     const watchId = useRef(null);
     const [Loading, setLoading] = useState(true);
@@ -60,7 +60,7 @@ const App = () => {
                     return prevMarkers.map((marker, index) => {
                         if (index == 0) {
                             // Update the specific marker's properties
-                            return { lat: position.coords.latitude, long: position.coords.longitude, name: marker.name };
+                            return { lat: position.coords.latitude, long: position.coords.longitude, name: marker.name, image: marker.image };
                         }
                         return marker;
                     });
@@ -99,7 +99,7 @@ const App = () => {
                     return prevMarkers.map((marker, index) => {
                         if (index == 0) {
                             // Update the specific marker's properties
-                            return { lat: position.coords.latitude, long: position.coords.longitude, name: marker.name };
+                            return { lat: position.coords.latitude, long: position.coords.longitude, name: marker.name, image: marker.image };
                         }
                         return marker;
                     });
@@ -175,7 +175,7 @@ const App = () => {
     //         console.error('Error displaying notification:', error);
     //     }
     // };
-    
+
     if (netInfo?.isConnected == false)
         return (
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -198,35 +198,64 @@ const App = () => {
                             initialRegion={{
                                 latitude: Number(ListValue[0]?.lat),
                                 longitude: Number(ListValue[0]?.long),
-                                latitudeDelta: 1.0922,
-                                longitudeDelta: 1.0421,
+                                latitudeDelta: 0.2922,
+                                longitudeDelta: 0.2421,
 
                             }}
                         >
+                            <MapCircle
+                                center={{
+                                    latitude: Number(ListValue[0]?.lat),
+                                    longitude: Number(ListValue[0]?.long),
+                                }}
+                                radius={50}
+                                strokeWidth={0.5}
+                                strokeColor="#3399ff"
+                                fillColor="rgba(61, 136, 205, 0.2)"
+                                lineJoin='bevel'
+
+                            />
+
+                            <MapCircle
+                                center={{
+                                    latitude: Number(ListValue[0]?.lat),
+                                    longitude: Number(ListValue[0]?.long),
+                                }}
+                                radius={20}
+                                strokeWidth={0.5}
+                                strokeColor="#3399ff"
+                                fillColor="rgba(61, 136, 205, 0.2)"
+                                lineJoin='bevel'
+
+                            />
                             {ListValue.map((item, index) =>
 
                                 <Marker
 
+                                    style={{ overflow: 'visible', height: 50, }}
                                     key={index}
                                     coordinate={{ latitude: Number(item.lat), longitude: Number(item.long) }}
                                     title={item?.name}
-                                    description="Marker Description"
+                                    description="Marker Description">
 
-
-                                />
+                                    <Image source={item?.image} style={{ height: 40, width: 40, borderRadius: 100 }} />
+                                    <View style={{
+                                        height: 7, width: 7, backgroundColor: "blue", opacity: 0.5, borderRadius: 100, position: "absolute", alignSelf: "center", bottom: -1
+                                    }} />
+                                </Marker>
                             )
                             }
                         </MapView>
                     </View>
-                    <View style={{ position: "absolute", borderWidth: 1, borderColor: "#CAD6DA", overflow: 'hidden', height: "25%", backgroundColor: "rgba(0,0,0, 0.6)", width: "100%", bottom: 0, borderTopRightRadius: 25, borderTopLeftRadius: 25, padding: 20 }}>
+                    <View style={{ position: "absolute", borderWidth: 1, borderColor: "#CAD6DA", overflow: 'hidden', height: "25%", backgroundColor: "rgba(253,253,253, 0.8)", width: "100%", bottom: 0, borderTopRightRadius: 25, borderTopLeftRadius: 25, padding: 20 }}>
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                            <Text style={{ fontSize: 18, color: "white", fontWeight: '600' }}>Live Location Traker</Text>
+                            <Text style={{ fontSize: 18, color: "black", fontWeight: '600' }}>Live Location Traker</Text>
                             <TouchableOpacity onPress={() => { getLocation() }} style={{ borderRadius: 100, backgroundColor: "#CAD6DA", alignItems: "center", justifyContent: "center", padding: 10 }}>
                                 <Image source={require("./src/images/gps.png")} style={{ height: 20, width: 20, resizeMode: "cover" }} />
                             </TouchableOpacity>
                         </View>
-                        <Text style={{ fontSize: 16, color: "white", marginTop: 10 }}>Live Latitude     :  {ListValue[0].lat}</Text>
-                        <Text style={{ fontSize: 16, color: "white", marginTop: 5 }}>Live Longitude  :  {ListValue[0].long}</Text>
+                        <Text style={{ fontSize: 16, color: "black", marginTop: 10 }}>Live Latitude     :  {ListValue[0].lat}</Text>
+                        <Text style={{ fontSize: 16, color: "black", marginTop: 5 }}>Live Longitude  :  {ListValue[0].long}</Text>
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 15 }}>
                             {!LiveButton && <TouchableOpacity onPress={() => { startLocationTracking() }} style={{ alignItems: "center", justifyContent: "center", width: "100%", backgroundColor: "#CAD6DA", height: 35, borderRadius: 5, }}>
                                 <Text style={{ fontSize: 16, color: "black", }}>Start</Text>
