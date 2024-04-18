@@ -1,19 +1,18 @@
 //import liraries
 import React, { useEffect, useRef, useState, } from 'react';
-import { View, Text, Animated, Easing, StyleSheet, TouchableOpacity, Image, StatusBar, } from 'react-native';
+import { View, Text, Animated, Easing, StyleSheet, TouchableOpacity, Image, StatusBar, ImageBackground, } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import color from '../styles/color';
 
 // create a component
-const Animations = () => {
+const Animations1 = () => {
 
     const [open, setopen] = useState(false);
     const animated = useRef(new Animated.Value(0)).current
     const rotate = animated.interpolate({ inputRange: [0, 2], outputRange: ['0deg', '150deg'] });
     const rotate1 = animated.interpolate({ inputRange: [0, 2], outputRange: ['0deg', '-150deg',] });
-    const rotate2 = animated.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-120deg',] });
-    const rotate3 = animated.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-140deg',] });
-
+    const rotate2 = animated.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-130deg',] });
+    const rotate3 = animated.interpolate({ inputRange: [0, 2], outputRange: ['0deg', '-70deg',] });
     const animate = () => {
         Animated.spring(animated, {
             toValue: 1,
@@ -40,20 +39,29 @@ const Animations = () => {
         <View style={styles.container}>
             <StatusBar backgroundColor={"white"} />
             <View style={{ position: "absolute", alignSelf: "center", alignItems: "center", bottom: 200 }}>
-                <Animated.View style={[styles.item, { top: 20 }, { transform: [{ rotate: "-120deg" }, { rotate: rotate },] }]}>
-                    <Animated.View style={[styles.dot,]}>
+                <Animated.View style={[styles.item, { transform: [{ rotate: "-130deg" }, { rotate: rotate },] }]}>
+                    {/* <Animated.View style={[styles.dot,]}>
                         <MaterialCommunityIcons name='currency-ils' size={20} color={color.white} />
-                    </Animated.View>
+                    </Animated.View> */}
+                    <ImageBackground source={require("../images/Box.png")} tintColor={"red"} style={{ height: 120, width: 120, alignItems: "center", }}>
+                        <MaterialCommunityIcons name='currency-ils' size={20} color={color.white} style={{ marginTop: "25%" }} />
+                    </ImageBackground>
                 </Animated.View>
-                <Animated.View style={[styles.item1, { top: 20 }, { transform: [{ rotate: "120deg" }, { rotate: rotate1 },] }, {}]}>
-                    <Animated.View style={[styles.dot1, { backgroundColor: "green" }]}>
+                <Animated.View style={[styles.item1, { transform: [{ rotate: "130deg" }, { rotate: rotate1 },] }, {}]}>
+                    {/* <Animated.View style={[styles.dot1, { backgroundColor: "green" }]}>
                         <MaterialCommunityIcons name='account' size={20} color={color.white} />
-                    </Animated.View>
+                    </Animated.View> */}
+                    <ImageBackground source={require("../images/Box.png")} tintColor={"green"} style={{ height: 120, width: 120, alignItems: "center", }}>
+                        <MaterialCommunityIcons name='account' size={20} color={color.white} style={{ marginTop: "25%" }} />
+                    </ImageBackground>
                 </Animated.View>
-                <Animated.View style={[styles.item2, { transform: [{ rotate: "120deg" }, { rotate: rotate2 },] }, {}]}>
-                    <Animated.View style={[styles.dot1, { backgroundColor: 'blue', }]}>
+                <Animated.View style={[styles.item2, { transform: [{ rotate: "130deg" }, { rotate: rotate2 },] }, {}]}>
+                    {/* <Animated.View style={[styles.dot1, { backgroundColor: 'blue', }]}>
                         <MaterialCommunityIcons name='electron-framework' size={30} color={color.white} />
-                    </Animated.View>
+                    </Animated.View> */}
+                    <ImageBackground source={require("../images/Box.png")} tintColor={"blue"} style={{ height: 120, width: 120, alignItems: "center", }}>
+                        <MaterialCommunityIcons name='electron-framework' size={30} color={color.white} style={{ marginTop: "25%" }} />
+                    </ImageBackground>
                 </Animated.View>
             </View>
 
@@ -137,4 +145,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Animations;
+export default Animations1;
