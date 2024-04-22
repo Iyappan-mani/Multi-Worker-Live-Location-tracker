@@ -1,18 +1,20 @@
 //import liraries
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, StatusBar } from 'react-native';
-import AnimatedLoading from './src/Animation/Loading1';
-import AnimationsView from './src/Animation/Loading2';
-import AnimationsView1 from './src/Animation/Loading3';
-import AnimationsView2 from './src/Animation/Loading4';
-import AnimationsView3 from './src/Animation/Loading5';
-import AnimationsView4 from './src/Animation/Loading6';
-import AnimationsView5 from './src/Animation/Loading7';
-import AnimationsView6 from './src/Animation/Loading8';
-import AnimationsView7 from './src/Animation/Loading9';
+import AnimatedLoading from '../Animation/Loading1';
+import AnimationsView from '../Animation/Loading2';
+import AnimationsView1 from '../Animation/Loading3';
+import AnimationsView2 from '../Animation/Loading4';
+import AnimationsView3 from '../Animation/Loading5';
+import AnimationsView4 from '../Animation/Loading6';
+import AnimationsView6 from '../Animation/Loading8';
+import AnimationsView5 from '../Animation/Loading7';
+import AnimationsView7 from '../Animation/Loading9';
+
 
 // create a component
-const App = () => {
+const TestAnimation
+ = () => {
     return (
         <View style={styles.container}>
             <StatusBar  backgroundColor={"white"}/>
@@ -72,4 +74,5 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default App;
+export default TestAnimation
+;

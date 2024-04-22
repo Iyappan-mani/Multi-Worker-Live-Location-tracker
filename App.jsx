@@ -1,12 +1,19 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import Animations from './src/screen/Animation';
+import Animations1 from './src/screen/Animation1';
+import TestAnimation from './src/screen/TestAnimation';
+import Map from './src/screen/Map';
+import color from './src/styles/color';
 
 // create a component
 const App = () => {
     return (
-     <Animations/>
+        <>
+            <StatusBar backgroundColor={color.white} hidden />
+            <Map />
+        </>
     );
 };
 
@@ -16,7 +23,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-   
+
     },
 });
 

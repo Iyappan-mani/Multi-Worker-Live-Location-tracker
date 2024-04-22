@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Alert, Platform, PermissionsAndroid, ToastAndroid, ActivityIndicator, TouchableOpacity, Image, Animated, Easing, } from 'react-native';
+import { View, Text, Alert, Platform, PermissionsAndroid, ToastAndroid, ActivityIndicator, TouchableOpacity, Image, Animated, Easing, StatusBar, } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import notifee from '@notifee/react-native';
 import MapView, { MapCircle, MapOverlay, Marker } from 'react-native-maps';
 import { useNetInfo } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import color from '../styles/color';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const Map = () => {
     const netInfo = useNetInfo();
     // const [location, setLocation] = useState(null);
@@ -68,10 +70,10 @@ const Map = () => {
                 });
                 setLoading(false)
                 Animated.timing(animatioBottom, {
-                    toValue: 0, 
+                    toValue: 0,
                     useNativeDriver: true,
                     duration: 2000,
-                    easing:Easing.bounce
+                    easing: Easing.linear
                 }).start()
                 console.log(`latitude: ${position.coords.latitude} | longitude: ${position.coords.longitude}`);
             },
@@ -192,6 +194,7 @@ const Map = () => {
     else return (
 
         <View style={{ flex: 1 }}>
+
             {Loading ?
                 <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
                     <ActivityIndicator />
@@ -205,8 +208,8 @@ const Map = () => {
                             initialRegion={{
                                 latitude: Number(ListValue[0]?.lat),
                                 longitude: Number(ListValue[0]?.long),
-                                latitudeDelta: 0.2922,
-                                longitudeDelta: 0.2421,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
 
                             }}
                         >
@@ -238,13 +241,11 @@ const Map = () => {
                             {ListValue.map((item, index) =>
 
                                 <Marker
-
                                     style={{ overflow: 'visible', height: 50, }}
                                     key={index}
                                     coordinate={{ latitude: Number(item.lat), longitude: Number(item.long) }}
                                     title={item?.name}
                                     description="Marker Description">
-
                                     <Image source={item?.image} style={{ height: 40, width: 40, borderRadius: 100 }} />
                                     <View style={{
                                         height: 7, width: 7, backgroundColor: "blue", opacity: 0.5, borderRadius: 100, position: "absolute", alignSelf: "center", bottom: -1
@@ -253,28 +254,32 @@ const Map = () => {
                             )
                             }
                         </MapView>
+
+                        <TouchableOpacity onPress={() => { getLocation() }} style={{ borderRadius: 100, backgroundColor: color.white, alignItems: "center", justifyContent: "center", padding: 12, position: "absolute", right: 15, bottom: "25%", borderWidth: 2, borderColor: color.white }}>
+                            <MaterialIcons name='my-location' size={22} color={color.blue} />
+                        </TouchableOpacity>
                     </View>
-                    <Animated.View style={{ transform: [{ translateY: animatioBottom }], position: "absolute", borderWidth: 1, borderColor: "#CAD6DA", overflow: 'hidden', height: "25%", backgroundColor: "rgba(253,253,253, 0.8)", width: "100%", bottom: 0, borderTopRightRadius: 25, borderTopLeftRadius: 25, padding: 20 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                    <Animated.View style={{ transform: [{ translateY: animatioBottom }], position: "absolute", overflow: 'hidden', height: "22%", backgroundColor: color.white, width: "100%", bottom: 0, borderTopRightRadius: 10, borderTopLeftRadius: 10, padding: 20 }}>
+                        <View style={{ height: 3, width: 25, backgroundColor: color.border, borderRadius: 10, alignSelf: "center" }} />
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 14 }}>
                             <Text style={{ fontSize: 18, color: "black", fontWeight: '600' }}>Live Location Traker</Text>
-                            <TouchableOpacity onPress={() => { getLocation() }} style={{ borderRadius: 100, backgroundColor: "#CAD6DA", alignItems: "center", justifyContent: "center", padding: 10 }}>
-                                <Image source={require("../images/gps.png")} style={{ height: 20, width: 20, resizeMode: "cover" }} />
-                            </TouchableOpacity>
                         </View>
-                        <Text style={{ fontSize: 16, color: "black", marginTop: 10 }}>Live Latitude     :  {ListValue[0].lat}</Text>
-                        <Text style={{ fontSize: 16, color: "black", marginTop: 5 }}>Live Longitude  :  {ListValue[0].long}</Text>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 15 }}>
-                            {!LiveButton && <TouchableOpacity onPress={() => { startLocationTracking() }} style={{ alignItems: "center", justifyContent: "center", width: "100%", backgroundColor: "#CAD6DA", height: 35, borderRadius: 5, }}>
-                                <Text style={{ fontSize: 16, color: "black", }}>Start</Text>
+                        <Text style={{ fontSize: 14, marginTop: 10 }}> Your Live Lat :  <Text style={{ color: color.green, fontWeight: "bold" }}>{ListValue[0].lat}</Text> and long : <Text style={{ color: color.blue, fontWeight: "bold" }}>{ListValue[0].long}</Text></Text>
+                        {/* <Text style={{ fontSize: 16, color: "black", marginTop: 5 }}>Live Longitude  :  {ListValue[0].long}</Text> */}
+                        <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "flex-start", marginTop: 15 }}>
+                            {!LiveButton && <TouchableOpacity onPress={() => { startLocationTracking() }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: color.blue, height: 33, borderRadius: 20, paddingHorizontal: 10, flexDirection: "row" }}>
+                                <FontAwesome name='send' size={14} color={color.white} />
+                                <Text style={{ fontSize: 14, color: color.white, marginLeft: 6 }}>Start</Text>
                             </TouchableOpacity>}
-                            {LiveButton && <TouchableOpacity onPress={() => { stopLocationUpdates() }} style={{ alignItems: "center", justifyContent: "center", width: "100%", backgroundColor: "#CAA8DA", height: 35, borderRadius: 5 }}>
-                                <Text style={{ fontSize: 16, color: "black", }}>End</Text>
+                            {LiveButton && <TouchableOpacity onPress={() => { stopLocationUpdates() }} style={{ alignItems: "center", justifyContent: "center", backgroundColor: color.pink, height: 33, borderRadius: 20, paddingHorizontal: 10, flexDirection: "row" }}>
+                                <FontAwesome name='stop-circle' size={14} color={color.white} />
+                                <Text style={{ fontSize: 14, color: color.white, marginLeft: 6 }}>Stop</Text>
                             </TouchableOpacity>}
                         </View>
                     </Animated.View>
                     {LiveButton && <View style={{ position: 'absolute', width: 60, height: 25, backgroundColor: "red", right: 10, top: 10, borderRadius: 5, flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
                         <Text style={{ color: "white" }}>Live</Text>
-                        <View style={{ height: 6, width: 6, backgroundColor: "white", borderRadius: 100, marginLeft: 5 }} />
+                        <MaterialIcons name='location-pin' size={12} style={{ marginLeft: 4 }} color={color.white} />
                     </View>}
 
                 </>
